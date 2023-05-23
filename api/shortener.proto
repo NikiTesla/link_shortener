@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package api;
+
+option go_package= "github.com/NikiTesla/link_shortener";
+
+service Shortener {
+    rpc SaveOriginal(SaveOriginalRequest) returns (SaveOriginalResponse) {}
+    rpc GetOriginal(GetOriginalRequest) returns (GetOriginalResponse) {}
+}
+
+message SaveOriginalRequest {
+    string original_link = 1;
+}
+
+message SaveOriginalResponse {
+    string shorted_link = 1;
+}
+
+message GetOriginalRequest {
+    string shorted_link = 1;
+}
+
+message GetOriginalResponse {
+    string original_link = 1;
+}
