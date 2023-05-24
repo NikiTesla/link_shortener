@@ -20,6 +20,7 @@ require (
 require (
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/jackc/pgx v3.6.2+incompatible
+	github.com/joho/godotenv v1.5.1
 	golang.org/x/net v0.8.0 // indirect
 	golang.org/x/sys v0.6.0 // indirect
 	golang.org/x/text v0.8.0 // indirect

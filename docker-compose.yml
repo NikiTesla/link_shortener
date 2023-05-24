@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  db:
+      container_name: link_shortener_pg
+      image: postgres:15
+      restart: always
+      environment:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: pass
+        POSTGRES_DB: postgres
+      ports:
+      - "5432:5432"
+      volumes:
+      - db-data:/var/lib/postgresql/data
+
+  lamoda_rpc:
+    container_name: link_shortener
+    image: link_shortener
+    depends_on:
+    - db
+    links:
+    - db
+    ports:
+    - "8080:8080"
+volumes:
+  db-data:
+    driver: local

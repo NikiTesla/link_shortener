@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	address = "localhost:50051"
+	address = "localhost:8080"
 )
 
 func main() {
@@ -26,7 +26,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	r, err := c.SaveOriginal(ctx, &pb.SaveOriginalRequest{OriginalLink: "http://127.0.0.1:8000/hello"})
+	r, err := c.SaveOriginal(ctx, &pb.SaveOriginalRequest{OriginalLink: "http://127.0.0.1:8080/hello"})
 	if err != nil {
 		log.Printf("Cannot save original link: %v", err)
 	}

@@ -3,6 +3,7 @@ package environment
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/NikiTesla/link_shortener/pkg/repository"
 )
@@ -21,10 +22,12 @@ func NewEnvironment(configFile string) (*Environment, error) {
 	}
 
 	var db repository.Repo
-	if cfg.DBType == "in-memory" {
+	if os.Getenv("DBTYPE") == "in-memory" {
 		db, err = NewInMemoryDataBase()
-	} else if cfg.DBType == "postgres" {
+	} else if os.Getenv("DBTYPE") == "postgres" {
 		db, err = NewPostgersDataBase(cfg.PostgresDBConfig)
+	} else {
+		log.Fatalf("Cannot define database type")
 	}
 
 	if err != nil {

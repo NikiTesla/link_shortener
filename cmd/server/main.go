@@ -6,10 +6,15 @@ import (
 
 	"github.com/NikiTesla/link_shortener/pkg/environment"
 	"github.com/NikiTesla/link_shortener/pkg/service"
+	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 )
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("can't load env variables, err:", err)
+	}
+
 	configFile := os.Getenv("CONFIGFILE")
 	env, err := environment.NewEnvironment(configFile)
 	if err != nil {
