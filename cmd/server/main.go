@@ -2,20 +2,23 @@ package main
 
 import (
 	"log"
+	"os"
 
+	"github.com/NikiTesla/link_shortener/pkg/environment"
 	"github.com/NikiTesla/link_shortener/pkg/service"
 	"google.golang.org/grpc"
 )
 
-const (
-	port = 50051
-)
-
 func main() {
-	// TODO set environment
+	configFile := os.Getenv("CONFIGFILE")
+	env, err := environment.NewEnvironment(configFile)
+	if err != nil {
+		log.Fatal("can't load environment, err:", err)
+	}
 
 	server := grpc.NewServer()
-	if err := service.RunShortenerServer(port, server); err != nil {
+	shortenerServer := service.NewShortenerServer(env)
+	if err := service.RunShortenerServer(shortenerServer, server); err != nil {
 		log.Fatal(err)
 	}
 }

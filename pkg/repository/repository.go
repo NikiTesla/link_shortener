@@ -4,7 +4,7 @@ import (
 	"errors"
 	"sync"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx"
 )
 
 type Repo interface {
@@ -12,13 +12,13 @@ type Repo interface {
 	GetLink(shortenedLink string) (string, error)
 }
 
-type Postgres struct {
-	db *pgx.Conn
+type PostgresDB struct {
+	DB *pgx.Conn
 }
 
-type InMemory struct {
+type InMemoryDB struct {
 	sync.RWMutex
-	m map[string]string
+	DB map[string]string
 }
 
 var ErrLinkNotFound = errors.New("there is no such shortened link in database")
