@@ -19,15 +19,24 @@ func TestSaveOriginal(t *testing.T) {
 	data := []*pb.SaveOriginalRequest{
 		{OriginalLink: ""},
 		{OriginalLink: "https://www.ozon.ru/"},
+		{OriginalLink: "www.ozon.ru"},
 	}
 
 	expected_error := []error{
 		status.Error(codes.InvalidArgument, "Empty link is given"),
 		nil,
+		nil,
+	}
+	expected_response := []string{
+		"",
+		"0testlink0",
 	}
 
 	for i := 0; i < len(data); i++ {
 		resp, err := server.SaveOriginal(context.Background(), data[i])
+		if i < 2 && expected_response[i] != resp.ShortedLink {
+			t.Errorf("expected response/response mismatch: %s / %s", expected_response, resp.ShortedLink)
+		}
 		if err != nil {
 			if err.Error() != expected_error[i].Error() {
 				t.Errorf("error/expected error mismatch: %s / %s", err, expected_error[i])

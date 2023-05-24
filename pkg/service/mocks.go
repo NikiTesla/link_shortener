@@ -12,18 +12,21 @@ type MockDB struct {
 
 // SaveLink gets original shortened links and save them in database
 // Uses lock for writing
-func (m *MockDB) SaveLink(originalLink, shortenedLink string) error {
-	duplicate, err := m.IsDuplicate(shortenedLink)
+func (m *MockDB) SaveLink(originalLink, shortenedLink string) (string, error) {
+	shortDupl, origDuplShort, err := m.IsDuplicate(shortenedLink, originalLink)
 	if err != nil {
-		return fmt.Errorf("cannot check if duplicate")
+		return "", fmt.Errorf("cannot check if duplicate")
 	}
-	if duplicate {
-		return repository.ErrLinkAlreadyExists
+	if shortDupl {
+		return "", repository.ErrLinkAlreadyExists
+	}
+	if origDuplShort != "" {
+		return origDuplShort, nil
 	}
 
 	m.DB[shortenedLink] = originalLink
 
-	return nil
+	return shortenedLink, nil
 }
 
 // GetLink gets shortened link and search in database for the original one
@@ -40,11 +43,17 @@ func (m *MockDB) GetLink(shortenedLink string) (string, error) {
 }
 
 // IsDuplicate checks if such shortened link already exists in storage
-func (m *MockDB) IsDuplicate(shortenedLink string) (bool, error) {
+func (m *MockDB) IsDuplicate(shortenedLink, originalLink string) (shortDuplicate bool, origDuplicateShort string, err error) {
 	_, ok := m.DB[shortenedLink]
 	if ok {
-		return true, nil
+		shortDuplicate = true
 	}
 
-	return false, nil
+	for k, v := range m.DB {
+		if v == originalLink {
+			origDuplicateShort = k
+		}
+	}
+
+	return shortDuplicate, origDuplicateShort, nil
 }

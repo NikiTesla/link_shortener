@@ -8,9 +8,9 @@ import (
 )
 
 type Repo interface {
-	SaveLink(originalLink, shortenedLink string) error
+	SaveLink(originalLink, shortenedLink string) (string, error)
 	GetLink(shortenedLink string) (string, error)
-	IsDuplicate(shortenedLink string) (bool, error)
+	IsDuplicate(shortenedLink, originalLink string) (shortDuplicate bool, origDuplicateShort string, err error)
 }
 
 // PostgresDB is an implementation of Repo interface

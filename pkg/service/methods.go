@@ -68,15 +68,18 @@ func (s *ShortenerServer) GetOriginal(ctx context.Context, in *pb.GetOriginalReq
 
 // generateShortenedLink is an internal method for short link creatiion and saving.
 // Randomize each symbol of const linkLength from const chars list
-func (s *ShortenerServer) generateShortenedLink(originalLink string) (string, error) {
+// In case there is already record with such original link, returns it's short version from database
+func (s *ShortenerServer) generateShortenedLink(originalLink string) (shortedLink string, err error) {
 	linkBytes := make([]byte, linkLength)
 	for i := 0; i < linkLength; i++ {
 		linkBytes[i] = chars[rand.Intn(len(chars))]
 	}
 
-	shortedLink := string(linkBytes)
-	err := s.env.DB.SaveLink(originalLink, shortedLink)
+	shortedLink = string(linkBytes)
+
+	shortedLink, err = s.env.DB.SaveLink(originalLink, shortedLink)
 	if errors.Is(err, repository.ErrLinkAlreadyExists) {
+		log.Printf("short link is not unique, retry creation\n")
 		return s.generateShortenedLink(originalLink)
 	}
 	if err != nil {
