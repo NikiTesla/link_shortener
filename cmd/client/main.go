@@ -26,10 +26,19 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	r, err := c.SaveOriginal(ctx, &pb.SaveOriginalRequest{OriginalLink: "http://127.0.0.1:8080/hello"})
+	// Saving link
+	save_response, err := c.SaveOriginal(ctx, &pb.SaveOriginalRequest{OriginalLink: "OK.ru"})
 	if err != nil {
 		log.Printf("Cannot save original link: %v", err)
+	} else {
+		log.Printf("Shorted link: %s", save_response.GetShortedLink())
 	}
 
-	log.Printf("Shorted link: %v", r.ShortedLink)
+	// Getting link
+	get_response, err := c.GetOriginal(ctx, &pb.GetOriginalRequest{ShortedLink: "OyZz51wdUO"})
+	if err != nil {
+		log.Printf("Cannot get original link: %v", err)
+	} else {
+		log.Printf("Original link: %s", get_response.GetOriginalLink())
+	}
 }

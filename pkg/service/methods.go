@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"math/rand"
 
 	pb "github.com/NikiTesla/link_shortener/api"
+	"github.com/NikiTesla/link_shortener/pkg/repository"
 )
 
 const (
@@ -15,15 +15,12 @@ const (
 	linkLength = 10
 )
 
-var ErrLinkAlreadyExists = errors.New("shortened link already exists")
-
 // SaveOriginal gets context and SaveOriginalRequest with original link inside.
 // Calls generateShortened to create and save unique link in database.
 // returns SaveOriginalResponse with shortened link inside
 func (s *ShortenerServer) SaveOriginal(ctx context.Context, in *pb.SaveOriginalRequest) (*pb.SaveOriginalResponse, error) {
 	originalLink := in.GetOriginalLink()
-	log.Printf("Recieved: %v\n", originalLink)
-
+	// log.Printf("Recieved: %v\n", originalLink)
 	if originalLink == "" {
 		return &pb.SaveOriginalResponse{}, fmt.Errorf("recieved empty link")
 	}
@@ -43,7 +40,7 @@ func (s *ShortenerServer) SaveOriginal(ctx context.Context, in *pb.SaveOriginalR
 // returns GetOriginalResponse with original link inside and error
 func (s *ShortenerServer) GetOriginal(ctx context.Context, in *pb.GetOriginalRequest) (*pb.GetOriginalResponse, error) {
 	shortedLink := in.GetShortedLink()
-	log.Printf("Recieved: %v\n", shortedLink)
+	// log.Printf("Recieved: %v\n", shortedLink)
 	if shortedLink == "" {
 		return &pb.GetOriginalResponse{},
 			fmt.Errorf("recieved empty link")
@@ -70,7 +67,7 @@ func (s *ShortenerServer) generateShortenedLink(originalLink string) (string, er
 
 	shortedLink := string(linkBytes)
 	err := s.env.DB.SaveLink(originalLink, shortedLink)
-	if errors.Is(err, ErrLinkAlreadyExists) {
+	if errors.Is(err, repository.ErrLinkAlreadyExists) {
 		return s.generateShortenedLink(originalLink)
 	}
 	if err != nil {

@@ -32,5 +32,5 @@ func NewPostgersDataBase(cfg PostgresDBConfig) (*repository.PostgresDB, error) {
 }
 
 func NewInMemoryDataBase() (*repository.InMemoryDB, error) {
-	return &repository.InMemoryDB{}, nil
+	return &repository.InMemoryDB{DB: make(map[string]string)}, nil
 }
