@@ -2,11 +2,21 @@ syntax = "proto3";
 
 package api;
 
-option go_package= "github.com/NikiTesla/link_shortener";
+option go_package = "github.com/NikiTesla/link_shortener";
+import "api/annotations.proto";
 
 service Shortener {
-    rpc SaveOriginal(SaveOriginalRequest) returns (SaveOriginalResponse) {}
-    rpc GetOriginal(GetOriginalRequest) returns (GetOriginalResponse) {}
+    rpc SaveOriginal(SaveOriginalRequest) returns (SaveOriginalResponse) {
+        option (api.http) = {
+            post: "/save"
+            body: "*"
+        };
+    }
+    rpc GetOriginal(GetOriginalRequest) returns (GetOriginalResponse) {
+        option (api.http) = {
+            get: "/get/{shorted_link}"
+        };
+    }
 }
 
 message SaveOriginalRequest {

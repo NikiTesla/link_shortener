@@ -18,6 +18,7 @@ type PostgresDBConfig struct {
 // Config is a struct for general configuration parse
 type Config struct {
 	Port             int              `json:"port"`
+	RestPort         int              `json:"rest-port"`
 	Host             string           `json:"host"`
 	DBType           string           `json:"dbtype"`
 	PostgresDBConfig PostgresDBConfig `json:"db-config"`

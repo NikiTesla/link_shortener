@@ -1,0 +1,136 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "api/shortener.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "Shortener"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/get/{shortedLink}": {
+      "get": {
+        "operationId": "Shortener_GetOriginal",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiGetOriginalResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "shortedLink",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Shortener"
+        ]
+      }
+    },
+    "/save": {
+      "post": {
+        "operationId": "Shortener_SaveOriginal",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiSaveOriginalResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiSaveOriginalRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Shortener"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "apiGetOriginalResponse": {
+      "type": "object",
+      "properties": {
+        "originalLink": {
+          "type": "string"
+        }
+      }
+    },
+    "apiSaveOriginalRequest": {
+      "type": "object",
+      "properties": {
+        "originalLink": {
+          "type": "string"
+        }
+      }
+    },
+    "apiSaveOriginalResponse": {
+      "type": "object",
+      "properties": {
+        "shortedLink": {
+          "type": "string"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}
