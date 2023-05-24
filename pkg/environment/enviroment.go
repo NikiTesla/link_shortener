@@ -31,12 +31,12 @@ func NewEnvironment() (*Environment, error) {
 	}
 
 	if err != nil {
-		return nil, fmt.Errorf("cant create environment bacause of database: %s", err.Error())
+		return nil, fmt.Errorf("can't create environment bacause of database: %s", err.Error())
 	}
 
 	log.Printf("Host is %s\n", os.Getenv("HOST"))
 	log.Printf("Port is %s\n", os.Getenv("PORT"))
-	log.Printf("Database config is %+v\n", os.Getenv("POSTGRES_URL"))
+	log.Printf("Database config is %s\n", os.Getenv("POSTGRES_URL"))
 
 	return &Environment{
 		DB:   db,

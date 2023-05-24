@@ -25,4 +25,4 @@ type InMemoryDB struct {
 }
 
 var ErrLinkNotFound = errors.New("there is no such shortened link in database")
-var ErrLinkAlreadyExists = errors.New("shortened link already exists")
+var ErrShortLinkAlreadyExists = errors.New("shortened link already exists")

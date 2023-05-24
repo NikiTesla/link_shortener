@@ -15,7 +15,7 @@ func (im *InMemoryDB) SaveLink(originalLink, shortenedLink string) (string, erro
 		return "", fmt.Errorf("cannot check if duplicate")
 	}
 	if shortDupl {
-		return "", ErrLinkAlreadyExists
+		return "", ErrShortLinkAlreadyExists
 	}
 	if origDuplShort != "" {
 		return origDuplShort, nil

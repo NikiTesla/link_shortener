@@ -23,6 +23,7 @@ const (
 func (s *ShortenerServer) SaveOriginal(ctx context.Context, in *pb.SaveOriginalRequest) (*pb.SaveOriginalResponse, error) {
 	originalLink := in.GetOriginalLink()
 	// log.Printf("Recieved: %v\n", originalLink)
+
 	if originalLink == "" {
 		return &pb.SaveOriginalResponse{}, status.Error(codes.InvalidArgument, "Empty link is given")
 	}
@@ -78,7 +79,7 @@ func (s *ShortenerServer) generateShortenedLink(originalLink string) (shortedLin
 	shortedLink = string(linkBytes)
 
 	shortedLink, err = s.env.DB.SaveLink(originalLink, shortedLink)
-	if errors.Is(err, repository.ErrLinkAlreadyExists) {
+	if errors.Is(err, repository.ErrShortLinkAlreadyExists) {
 		log.Printf("short link is not unique, retry creation\n")
 		return s.generateShortenedLink(originalLink)
 	}

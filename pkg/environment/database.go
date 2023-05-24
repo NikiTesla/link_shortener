@@ -18,11 +18,11 @@ func NewPostgersDataBase() (*repository.PostgresDB, error) {
 
 	dbpool, err := pgxpool.NewWithConfig(context.Background(), config)
 	if err != nil {
-		log.Fatalf("can't connect database, err: %s\n", err)
+		log.Fatalf("can't connect to database, err: %s\n", err)
 	}
 
 	if err := dbpool.Ping(context.Background()); err != nil {
-		log.Fatalf("Cannot connect to database, error: %s\n", err)
+		log.Fatalf("can't ping database, error: %s\n", err)
 	}
 
 	return &repository.PostgresDB{

@@ -18,7 +18,7 @@ func (m *MockDB) SaveLink(originalLink, shortenedLink string) (string, error) {
 		return "", fmt.Errorf("cannot check if duplicate")
 	}
 	if shortDupl {
-		return "", repository.ErrLinkAlreadyExists
+		return "", repository.ErrShortLinkAlreadyExists
 	}
 	if origDuplShort != "" {
 		return origDuplShort, nil

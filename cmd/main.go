@@ -19,7 +19,7 @@ import (
 func main() {
 	// configuring passwords, configs source and data storage type
 	if err := godotenv.Load(); err != nil {
-		log.Fatal("can't load env variables, err:", err)
+		log.Fatal("can't load dotenv variables, err:", err)
 	}
 
 	// configuring port, host and database
@@ -28,7 +28,7 @@ func main() {
 		log.Fatal("can't load environment, err:", err)
 	}
 
-	// rest proxy running on port 8081
+	// rest proxy running on port REST_PORT
 	go runRest(fmt.Sprintf("%s:%s", env.Host, env.Port), os.Getenv("REST_PORT"))
 
 	server := grpc.NewServer()

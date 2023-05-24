@@ -2,8 +2,9 @@ package repository
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
+
+	"github.com/jackc/pgx/v5"
 )
 
 // SaveLink insert new record in database with original link and unique shortened link.
@@ -16,12 +17,13 @@ func (p *PostgresDB) SaveLink(originalLink, shortenedLink string) (string, error
 	}
 	defer tx.Rollback(context.Background())
 
+	// checking for duplicates in database for original or short link
 	shortDupl, origDuplShort, err := p.IsDuplicate(shortenedLink, originalLink)
 	if err != nil {
 		return "", fmt.Errorf("cannot check if duplicate: %s", err)
 	}
 	if shortDupl {
-		return "", ErrLinkAlreadyExists
+		return "", ErrShortLinkAlreadyExists
 	}
 	if origDuplShort != "" {
 		return origDuplShort, nil
@@ -51,7 +53,7 @@ func (p *PostgresDB) GetLink(shortenedLink string) (string, error) {
 	var originalLink string
 	err = tx.QueryRow(context.Background(), "SELECT original from links where short = $1", shortenedLink).Scan(&originalLink)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if err == pgx.ErrNoRows {
 			return "", ErrLinkNotFound
 		} else {
 			return "", fmt.Errorf("cannot get original link: %s", err)
@@ -70,15 +72,19 @@ func (p *PostgresDB) GetLink(shortenedLink string) (string, error) {
 // If original links was already saved, returns it's short version as second parameter, else ""
 func (p *PostgresDB) IsDuplicate(shortenedLink, originalLink string) (shortDuplicate bool, OrigDuplicateShort string, err error) {
 	err = p.DB.QueryRow(context.Background(), "SELECT EXISTS(SELECT id FROM links WHERE short = $1)",
-		originalLink).Scan(&shortDuplicate)
+		shortenedLink).Scan(&shortDuplicate)
 	if err != nil {
 		return false, "", err
 	}
 
-	err = p.DB.QueryRow(context.Background(), "SELECT short FROM links WHERE original = $1)").Scan(&OrigDuplicateShort)
+	err = p.DB.QueryRow(context.Background(), "SELECT short FROM links WHERE original = $1",
+		originalLink).Scan(&OrigDuplicateShort)
 	if err != nil {
-		return shortDuplicate, OrigDuplicateShort, err
+		if err == pgx.ErrNoRows {
+			return shortDuplicate, "", nil
+		}
+		return shortDuplicate, "", err
 	}
 
-	return shortDuplicate, OrigDuplicateShort, err
+	return shortDuplicate, OrigDuplicateShort, nil
 }
