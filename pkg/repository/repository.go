@@ -10,6 +10,7 @@ import (
 type Repo interface {
 	SaveLink(originalLink, shortenedLink string) error
 	GetLink(shortenedLink string) (string, error)
+	IsDuplicate(shortenedLink string) (bool, error)
 }
 
 type PostgresDB struct {

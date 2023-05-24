@@ -24,3 +24,7 @@ func (im *InMemoryDB) GetLink(shortenedLink string) (string, error) {
 
 	return originalLink, nil
 }
+
+func (im *InMemoryDB) IsDuplicate(shortenedLink string) (bool, error) {
+	return false, nil
+}
