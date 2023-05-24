@@ -3,11 +3,13 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
+	"log"
 	"math/rand"
 
 	pb "github.com/NikiTesla/link_shortener/api"
 	"github.com/NikiTesla/link_shortener/pkg/repository"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 const (
@@ -22,12 +24,13 @@ func (s *ShortenerServer) SaveOriginal(ctx context.Context, in *pb.SaveOriginalR
 	originalLink := in.GetOriginalLink()
 	// log.Printf("Recieved: %v\n", originalLink)
 	if originalLink == "" {
-		return &pb.SaveOriginalResponse{}, fmt.Errorf("recieved empty link")
+		return &pb.SaveOriginalResponse{}, status.Error(codes.InvalidArgument, "Empty link is given")
 	}
 
 	shortedLink, err := s.generateShortenedLink(originalLink)
 	if err != nil {
-		return &pb.SaveOriginalResponse{}, fmt.Errorf("cannot save link in database: %s", err)
+		log.Printf("cannot save link in database: %s\n", err)
+		return &pb.SaveOriginalResponse{}, status.Error(codes.Internal, "Cannot save link in database")
 	}
 
 	return &pb.SaveOriginalResponse{
@@ -41,15 +44,21 @@ func (s *ShortenerServer) SaveOriginal(ctx context.Context, in *pb.SaveOriginalR
 func (s *ShortenerServer) GetOriginal(ctx context.Context, in *pb.GetOriginalRequest) (*pb.GetOriginalResponse, error) {
 	shortedLink := in.GetShortedLink()
 	// log.Printf("Recieved: %v\n", shortedLink)
+
 	if shortedLink == "" {
 		return &pb.GetOriginalResponse{},
-			fmt.Errorf("recieved empty link")
+			status.Error(codes.InvalidArgument, "Empty link is given")
 	}
 
 	shortedLink, err := s.env.DB.GetLink(shortedLink)
-	if err != nil {
+	if errors.Is(err, repository.ErrLinkNotFound) {
 		return &pb.GetOriginalResponse{},
-			fmt.Errorf("cannot get original link from database: %s", err)
+			status.Error(codes.NotFound, "No such shortened link in database")
+	}
+	if err != nil {
+		log.Printf("cannot get original link from database: %s", err)
+		return &pb.GetOriginalResponse{},
+			status.Error(codes.Internal, "Cannot get original link from database")
 	}
 
 	return &pb.GetOriginalResponse{

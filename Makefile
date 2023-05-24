@@ -13,6 +13,7 @@ code-gen:
 
 	@ export PATH="$PATH:$(go env GOPATH)/bin"
 	@ protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative api/shortener.proto
+	@ protoc --go_out=. --go-grpc_out=. --grpc-gateway_out=. --grpc-gateway_opt generate_unbound_methods=true --openapiv2_out . api.proto
 
 run-server:
 	@ echo "  >  running server"

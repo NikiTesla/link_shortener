@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 )
 
@@ -47,7 +48,11 @@ func (p *PostgresDB) GetLink(shortenedLink string) (string, error) {
 	var originalLink string
 	err = tx.QueryRow(context.Background(), "SELECT original from links where short = $1", shortenedLink).Scan(&originalLink)
 	if err != nil {
-		return "", fmt.Errorf("cannot get original link: %s", err)
+		if err == sql.ErrNoRows {
+			return "", ErrLinkNotFound
+		} else {
+			return "", fmt.Errorf("cannot get original link: %s", err)
+		}
 	}
 
 	if err = tx.Commit(context.Background()); err != nil {

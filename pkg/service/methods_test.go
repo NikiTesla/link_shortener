@@ -2,11 +2,12 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	pb "github.com/NikiTesla/link_shortener/api"
 	"github.com/NikiTesla/link_shortener/pkg/environment"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func TestSaveOriginal(t *testing.T) {
@@ -21,7 +22,7 @@ func TestSaveOriginal(t *testing.T) {
 	}
 
 	expected_error := []error{
-		fmt.Errorf("recieved empty link"),
+		status.Error(codes.InvalidArgument, "Empty link is given"),
 		nil,
 	}
 
@@ -58,7 +59,7 @@ func TestGetOriginal(t *testing.T) {
 		{OriginalLink: "https://www.ozon.ru/"},
 	}
 	expected_error := []error{
-		fmt.Errorf("recieved empty link"),
+		status.Error(codes.InvalidArgument, "Empty link is given"),
 		nil,
 	}
 
