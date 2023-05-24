@@ -13,6 +13,8 @@ type Environment struct {
 	DB     repository.Repo
 }
 
+// NewEnvironment creates environment according to configuration file.
+// Stores port, host and database abstraction
 func NewEnvironment(configFile string) (*Environment, error) {
 	log.Println("Setting environment")
 

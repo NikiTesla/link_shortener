@@ -13,10 +13,12 @@ type Repo interface {
 	IsDuplicate(shortenedLink string) (bool, error)
 }
 
+// PostgresDB is an implementation of Repo interface
 type PostgresDB struct {
 	DB *pgx.Conn
 }
 
+// InMemoryDB is an implementation of Repo interface
 type InMemoryDB struct {
 	sync.RWMutex
 	DB map[string]string

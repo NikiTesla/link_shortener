@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+// PostgresDBConfig is a struct for database configuration parse
 type PostgresDBConfig struct {
 	Port     int    `json:"port"`
 	Host     string `json:"host"`
@@ -14,6 +15,7 @@ type PostgresDBConfig struct {
 	SSlmode  string `json:"sslmode"`
 }
 
+// Config is a struct for general configuration parse
 type Config struct {
 	Port             int              `json:"port"`
 	Host             string           `json:"host"`
@@ -21,6 +23,7 @@ type Config struct {
 	PostgresDBConfig PostgresDBConfig `json:"db-config"`
 }
 
+// NewConfig unmarshal configuration from configFile
 func NewConfig(configFile string) (*Config, error) {
 	rawJSON, err := os.ReadFile(configFile)
 	if err != nil {

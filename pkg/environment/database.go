@@ -9,6 +9,7 @@ import (
 	"github.com/jackc/pgx"
 )
 
+// NewPostgersDataBase creates connection to postgres databse in case of using it
 func NewPostgersDataBase(cfg PostgresDBConfig) (*repository.PostgresDB, error) {
 	config := pgx.ConnConfig{
 		Host:     cfg.Host,
@@ -31,6 +32,7 @@ func NewPostgersDataBase(cfg PostgresDBConfig) (*repository.PostgresDB, error) {
 	}, nil
 }
 
+// NewInMemoryDataBase creates in-memory database in case of using it
 func NewInMemoryDataBase() (*repository.InMemoryDB, error) {
 	return &repository.InMemoryDB{DB: make(map[string]string)}, nil
 }

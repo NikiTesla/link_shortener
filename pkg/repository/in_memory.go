@@ -38,6 +38,7 @@ func (im *InMemoryDB) GetLink(shortenedLink string) (string, error) {
 	return originalLink, nil
 }
 
+// IsDuplicate checks if such shortened link already exists in storage
 func (im *InMemoryDB) IsDuplicate(shortenedLink string) (bool, error) {
 	_, ok := im.DB[shortenedLink]
 	if ok {

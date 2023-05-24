@@ -2,6 +2,9 @@ package repository
 
 import "fmt"
 
+// SaveLink insert new record in database with original link and unique shortened link.
+// Uniqueness is checked with IsDuplicate method. If shortened link already exists, returns ErrLinkAlreadyExists.
+// Transactions used
 func (p *PostgresDB) SaveLink(originalLink, shortenedLink string) error {
 	tx, err := p.DB.Begin()
 	if err != nil {
@@ -29,6 +32,8 @@ func (p *PostgresDB) SaveLink(originalLink, shortenedLink string) error {
 	return nil
 }
 
+// GetLink searches record in database according to shortened link.
+// Returns original link
 func (p *PostgresDB) GetLink(shortenedLink string) (string, error) {
 	tx, err := p.DB.Begin()
 	if err != nil {
@@ -49,6 +54,7 @@ func (p *PostgresDB) GetLink(shortenedLink string) (string, error) {
 	return originalLink, nil
 }
 
+// IsDuplicate checks if shortened link exists in database
 func (p *PostgresDB) IsDuplicate(shortenedLink string) (bool, error) {
 	var duplicate bool
 	err := p.DB.QueryRow("SELECT EXISTS(SELECT id FROM links WHERE short = $1)",

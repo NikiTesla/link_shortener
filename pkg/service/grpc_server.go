@@ -16,6 +16,7 @@ type ShortenerServer struct {
 	env *environment.Environment
 }
 
+// NewShortenerServer creates ShortenerServer with environment
 func NewShortenerServer(env *environment.Environment) *ShortenerServer {
 	return &ShortenerServer{
 		env: env,

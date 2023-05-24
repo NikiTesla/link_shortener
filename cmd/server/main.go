@@ -11,10 +11,12 @@ import (
 )
 
 func main() {
+	// configuring passwords, configs source and data storage type
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("can't load env variables, err:", err)
 	}
 
+	// configuring port, host and database
 	configFile := os.Getenv("CONFIGFILE")
 	env, err := environment.NewEnvironment(configFile)
 	if err != nil {

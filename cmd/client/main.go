@@ -27,17 +27,17 @@ func main() {
 	defer cancel()
 
 	// Saving link
-	save_response, err := c.SaveOriginal(ctx, &pb.SaveOriginalRequest{OriginalLink: "OK.ru"})
+	save_response, err := c.SaveOriginal(ctx, &pb.SaveOriginalRequest{OriginalLink: "https://www.ozon.ru/"})
 	if err != nil {
-		log.Printf("Cannot save original link: %v", err)
+		log.Fatalf("Cannot save original link: %v", err)
 	} else {
 		log.Printf("Shorted link: %s", save_response.GetShortedLink())
 	}
 
-	// Getting link
-	get_response, err := c.GetOriginal(ctx, &pb.GetOriginalRequest{ShortedLink: "OyZz51wdUO"})
+	// Getting saved earlier link
+	get_response, err := c.GetOriginal(ctx, &pb.GetOriginalRequest{ShortedLink: save_response.GetShortedLink()})
 	if err != nil {
-		log.Printf("Cannot get original link: %v", err)
+		log.Fatalf("Cannot get original link: %v", err)
 	} else {
 		log.Printf("Original link: %s", get_response.GetOriginalLink())
 	}
