@@ -4,7 +4,7 @@ import (
 	"errors"
 	"sync"
 
-	"github.com/jackc/pgx"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type Repo interface {
@@ -15,7 +15,7 @@ type Repo interface {
 
 // PostgresDB is an implementation of Repo interface
 type PostgresDB struct {
-	DB *pgx.Conn
+	DB *pgxpool.Pool
 }
 
 // InMemoryDB is an implementation of Repo interface

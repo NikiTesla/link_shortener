@@ -14,16 +14,11 @@ code-gen:
 	@ export PATH="$PATH:$(go env GOPATH)/bin"
 	@ protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative api/shortener.proto
 
-# usage: make run-server CONFIGFILE="[configfilename]"
 run-server:
 	@ echo "  >  running server"
 	@ sudo docker start link_shortener_pg
 	@ sleep 0.1
-	@ go run cmd/server/main.go
-
-run-client:
-	@ echo "  >  running client"
-	@ go run cmd/client/main.go
+	@ go run cmd/main.go
 
 docker:
 	@ sudo docker rmi -f $(PROJECTNAME)

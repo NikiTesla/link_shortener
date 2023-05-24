@@ -25,9 +25,9 @@ func NewShortenerServer(env *environment.Environment) *ShortenerServer {
 
 // RunShortenerServer starts listening on port and registers methods of ShortenerServer as procedures
 func RunShortenerServer(shortener *ShortenerServer, s *grpc.Server) error {
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%v", shortener.env.Config.Port))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", shortener.env.Port))
 	if err != nil {
-		return fmt.Errorf("listening failed: %v", err)
+		return fmt.Errorf("listening failed: %s", err)
 	}
 
 	pb.RegisterShortenerServer(s, shortener)

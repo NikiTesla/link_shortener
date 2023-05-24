@@ -23,14 +23,13 @@ func main() {
 	}
 
 	// configuring port, host and database
-	configFile := os.Getenv("CONFIGFILE")
-	env, err := environment.NewEnvironment(configFile)
+	env, err := environment.NewEnvironment()
 	if err != nil {
 		log.Fatal("can't load environment, err:", err)
 	}
 
 	// rest proxy running on port 8081
-	go runRest(fmt.Sprintf("%s:%d", env.Config.Host, env.Config.Port), env.Config.RestPort)
+	go runRest(fmt.Sprintf("%s:%s", env.Host, env.Port), os.Getenv("REST_PORT"))
 
 	server := grpc.NewServer()
 	shortenerServer := service.NewShortenerServer(env)
@@ -40,7 +39,7 @@ func main() {
 }
 
 // runRest function runs rest service on port restPort that proxies calls to grpc service on grpcAddress
-func runRest(grpcAddress string, restPort int) {
+func runRest(grpcAddress string, restPort string) {
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -52,8 +51,8 @@ func runRest(grpcAddress string, restPort int) {
 		panic(err)
 	}
 
-	log.Printf("rest server listening at %d", restPort)
-	if err := http.ListenAndServe(fmt.Sprintf(":%d", restPort), mux); err != nil {
+	log.Printf("rest server listening at %s", restPort)
+	if err := http.ListenAndServe(fmt.Sprintf(":%s", restPort), mux); err != nil {
 		panic(err)
 	}
 }
