@@ -78,3 +78,19 @@ func TestGetOriginal(t *testing.T) {
 		}
 	}
 }
+
+func TestGenerateShortenedLink(t *testing.T) {
+	mock := &MockDB{make(map[string]string)}
+	mock.DB["0testlink0"] = "https://www.ozon.ru/"
+
+	server := NewShortenerServer(&environment.Environment{DB: mock})
+
+	originalLink, err := server.generateShortenedLink("http://localhost:8080/test")
+	if err != nil {
+		t.Errorf("error is not nil: %s", err)
+	}
+
+	if len(originalLink) != linkLength {
+		t.Errorf("length of shortened link is %d and not %d", len(originalLink), linkLength)
+	}
+}
