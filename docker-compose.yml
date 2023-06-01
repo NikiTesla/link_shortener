@@ -13,7 +13,7 @@ services:
       volumes:
       - db-data:/var/lib/postgresql/data
 
-  lamoda_rpc:
+  link_shortener_rpc:
     container_name: link_shortener
     image: link_shortener
     depends_on:
